@@ -19,21 +19,12 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/").permitAll();
-                    auth.anyRequest().authenticated();
+                    auth.requestMatchers("/home").permitAll()
+                    .requestMatchers("/secured").authenticated();
                 })
                 .oauth2Login(withDefaults())
+                .logout(logout -> logout.logoutSuccessUrl("/"))
                 .build();
 
-
-
     }
-
-
-
-
-
-
-
-
 }
