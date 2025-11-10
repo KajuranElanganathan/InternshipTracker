@@ -19,7 +19,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
 
-        // this is Spring's built-in GitHub data fetcher
+        //Spring's built-in GitHub data fetcher
         OAuth2UserService<OAuth2UserRequest, OAuth2User> delegate =
                 new DefaultOAuth2UserService();
 
@@ -38,7 +38,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         // update info
         user.setEmail(email);
         user.setFirstName(name);
-        user.setPictureUrl(avatar);
+
 
         // persist to DB
         usersRepository.save(user);
