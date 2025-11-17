@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class InternshipService {
@@ -63,5 +64,63 @@ public class InternshipService {
 
         return result;
     }
+
+    public InternshipResponseDTO updateInternship(
+            Users user,
+            UUID internshipId,
+            CreateOrUpdateInternshipDTO dto
+    ){
+
+        Internship internship = internshipRepository.findById(internshipId)
+                .orElseThrow(() -> new RuntimeException("Internship not found"));
+
+        if (!internship.getUser().getId().equals(user.getId())) {
+            throw new RuntimeException("Forbidden: You do not own this internship");
+        }
+
+        internship.setTitle(dto.getTitle());
+        internship.setCompany(dto.getCompany());
+        internship.setStatus(dto.getStatus());
+
+        Internship saved = internshipRepository.save(internship);
+
+        return new InternshipResponseDTO(
+                saved.getId(),
+                saved.getCompany(),
+                saved.getTitle(),
+                saved.getStatus(),
+                saved.getCreatedAt()
+        );
+
+    }
+    public void deleteInternship(UUID id, Users user) {
+
+        Internship internship = internshipRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Internship not found"));
+
+        if (!internship.getUser().getId().equals(user.getId())) {
+            throw new RuntimeException("Unauthorized");
+        }
+
+        internshipRepository.delete(internship);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 }

@@ -19,14 +19,11 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
 
-        //Spring's built-in GitHub data fetcher
         OAuth2UserService<OAuth2UserRequest, OAuth2User> delegate =
                 new DefaultOAuth2UserService();
 
-        // actually fetch GitHub user JSON data
         OAuth2User oauthUser = delegate.loadUser(userRequest);
 
-        // get fields from GitHub JSON
         String email = oauthUser.getAttribute("email");
         String name = oauthUser.getAttribute("name");
         String avatar = oauthUser.getAttribute("avatar_url");

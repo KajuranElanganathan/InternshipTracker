@@ -49,5 +49,34 @@ public class InternshipController {
 
     }
 
+    @PutMapping("/{id}")
+    public InternshipResponseDTO updateInternship(
+            @PathVariable UUID id,
+            @RequestBody CreateOrUpdateInternshipDTO dto,
+            Authentication authentication) {
+
+        String email = authentication.getName();
+
+        Users user = usersRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        return internshipService.updateInternship(user, id, dto);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteInternship(
+            @PathVariable UUID id,
+            Authentication authentication
+    ) {
+        String email = authentication.getName();
+
+        Users user = usersRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        internshipService.deleteInternship(id, user);
+    }
+
+
+
 
 }
