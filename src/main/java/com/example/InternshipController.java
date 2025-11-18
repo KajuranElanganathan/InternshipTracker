@@ -1,13 +1,10 @@
 package com.example;
 
-
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -22,64 +19,46 @@ public class InternshipController {
         this.usersRepository = usersRepository;
     }
 
-    @PostMapping
-    public InternshipResponseDTO createInternship(@RequestBody CreateOrUpdateInternshipDTO dto,
-                                                  @AuthenticationPrincipal OAuth2User oauthUser
-    ) {
-
+    // Helper method to get the logged-in user
+    private Users getLoggedInUser(OAuth2User oauthUser) {
         String email = oauthUser.getAttribute("email");
-
-        Users user = usersRepository.findByEmail(email)
+        return usersRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+    }
 
+    @PostMapping
+    public InternshipResponseDTO createInternship(
+            @RequestBody CreateOrUpdateInternshipDTO dto,
+            @AuthenticationPrincipal OAuth2User oauthUser
+    ) {
+        Users user = getLoggedInUser(oauthUser);
         return internshipService.createInternship(user, dto);
     }
 
-
-
     @GetMapping("")
-    public List<InternshipResponseDTO> getAllInternships(Authentication authentication) {
-
-        String email = authentication.getName();
-
-        Users user = usersRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
+    public List<InternshipResponseDTO> getAllInternships(
+            @AuthenticationPrincipal OAuth2User oauthUser
+    ) {
+        Users user = getLoggedInUser(oauthUser);
         return internshipService.getInternships(user);
-
-
-
-
     }
 
     @PutMapping("/{id}")
     public InternshipResponseDTO updateInternship(
             @PathVariable UUID id,
             @RequestBody CreateOrUpdateInternshipDTO dto,
-            Authentication authentication) {
-
-        String email = authentication.getName();
-
-        Users user = usersRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
+            @AuthenticationPrincipal OAuth2User oauthUser
+    ) {
+        Users user = getLoggedInUser(oauthUser);
         return internshipService.updateInternship(user, id, dto);
     }
 
     @DeleteMapping("/{id}")
     public void deleteInternship(
             @PathVariable UUID id,
-            Authentication authentication
+            @AuthenticationPrincipal OAuth2User oauthUser
     ) {
-        String email = authentication.getName();
-
-        Users user = usersRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
+        Users user = getLoggedInUser(oauthUser);
         internshipService.deleteInternship(id, user);
     }
-
-
-
-
 }

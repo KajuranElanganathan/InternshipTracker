@@ -6,6 +6,8 @@ public class CreateOrUpdateInternshipDTO {
     private String title;
     private InternshipStatus status;
 
+    public CreateOrUpdateInternshipDTO() {}
+
     public String getCompany() {
         return company;
     }

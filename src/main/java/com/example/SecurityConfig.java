@@ -20,7 +20,7 @@ public class SecurityConfig {
         return http
                 .csrf(csrf -> csrf.disable())  // <-- disable for testing
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/secured", "/api/internships").authenticated()
+                        .requestMatchers("/secured", "/api/internships/**").authenticated()
                         .anyRequest().permitAll()
                 )
                 .oauth2Login(withDefaults())
