@@ -2,6 +2,8 @@ package com.example;
 
 
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,9 +24,10 @@ public class InternshipController {
 
     @PostMapping
     public InternshipResponseDTO createInternship(@RequestBody CreateOrUpdateInternshipDTO dto,
-                                                  Authentication authentication) {
+                                                  @AuthenticationPrincipal OAuth2User oauthUser
+    ) {
 
-        String email = authentication.getName();
+        String email = oauthUser.getAttribute("email");
 
         Users user = usersRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -34,7 +37,7 @@ public class InternshipController {
 
 
 
-    @GetMapping("/")
+    @GetMapping("")
     public List<InternshipResponseDTO> getAllInternships(Authentication authentication) {
 
         String email = authentication.getName();

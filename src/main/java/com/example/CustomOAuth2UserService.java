@@ -24,6 +24,9 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
         OAuth2User oauthUser = delegate.loadUser(userRequest);
 
+        String accessToken = userRequest.getAccessToken().getTokenValue();
+        System.out.println("GitHub Access Token: " + accessToken);
+
         String email = oauthUser.getAttribute("email");
         String name = oauthUser.getAttribute("name");
         String avatar = oauthUser.getAttribute("avatar_url");
