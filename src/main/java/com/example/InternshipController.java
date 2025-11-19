@@ -73,9 +73,23 @@ public class InternshipController {
         }
 
         @PostMapping("/extract")
-        public ExtractedInternshipDTO extract(@RequestBody UrlRequestDTO dto) throws Exception {
-            return geminiService.extractFromUrl(dto.getUrl());
+        public InternshipResponseDTO extract(
+                @RequestBody UrlRequestDTO dto,
+                @AuthenticationPrincipal OAuth2User oauthUser
+        ) throws Exception {
+
+            String email = oauthUser.getAttribute("email");
+
+            Users user = usersRepository.findByEmail(email)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+
+            // Extract the internship info from Gemini
+            ExtractedInternshipDTO extracted = geminiService.extractFromUrl(dto.getUrl());
+
+            // Save to DB for this user
+            return internshipService.createInternshipFromExtracted(user, extracted);
         }
+
     }
 
 

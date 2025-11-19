@@ -108,6 +108,24 @@ public class InternshipService {
 
         internshipRepository.delete(internship);
     }
+    public InternshipResponseDTO createInternshipFromExtracted(Users user, ExtractedInternshipDTO extracted) {
+
+        Internship internship = new Internship();
+        internship.setUser(user);
+        internship.setCompany(extracted.getCompany());
+        internship.setTitle(extracted.getTitle());
+
+        Internship saved = internshipRepository.save(internship);
+
+        return new InternshipResponseDTO(
+                saved.getId(),
+                saved.getCompany(),
+                saved.getTitle(),
+                saved.getStatus(),
+                saved.getCreatedAt()
+        );
+    }
+
 
 
 
