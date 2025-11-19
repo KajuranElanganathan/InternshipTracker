@@ -61,4 +61,37 @@ public class InternshipController {
         Users user = getLoggedInUser(oauthUser);
         internshipService.deleteInternship(id, user);
     }
+
+    @RestController
+    @RequestMapping("/api/ai")
+    public class AIController {
+
+        private final GeminiService geminiService;
+
+        public AIController(GeminiService geminiService) {
+            this.geminiService = geminiService;
+        }
+
+        @PostMapping("/extract")
+        public ExtractedInternshipDTO extract(@RequestBody UrlRequestDTO dto) throws Exception {
+            return geminiService.extractFromUrl(dto.getUrl());
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
